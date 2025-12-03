@@ -1,20 +1,19 @@
 import { COLORS } from "@/constants/colors";
+import { speakWithMaleVoice } from "@/utils/voice";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Speech from "expo-speech";
 import React, { useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function OperationSelect() {
-  const { level } = useLocalSearchParams();
+  const { grade } = useLocalSearchParams();
   const router = useRouter();
 
   useEffect(() => {
-    // Lecture au chargement de l’écran
-    Speech.speak("Choisis une opération pour t'entraîner", {
+    // Lecture au chargement de l'écran
+    speakWithMaleVoice("Choisis une opération pour t'entraîner", {
       language: "fr-FR",
       rate: 0.95,
-      pitch: 0.8,
-      onError: () => console.log("Speech error"),
     });
 
     return () => {
@@ -50,7 +49,7 @@ export default function OperationSelect() {
             style={[opStyles.card, { backgroundColor: o.color }]}
             onPress={() =>
               router.push(
-                `/difficulty?level=${encodeURIComponent(String(level))}&operation=${encodeURIComponent(o.value)}` as any
+                `/difficulty?grade=${encodeURIComponent(String(grade))}&module=operation&operation=${encodeURIComponent(o.value)}` as any
               )
             }
           >

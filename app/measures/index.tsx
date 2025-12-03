@@ -13,8 +13,8 @@ import {
   View,
 } from "react-native";
 
-export default function DifficultySelect() {
-  const { grade, module, operation } = useLocalSearchParams();
+export default function MeasuresLevelSelect() {
+  const { grade } = useLocalSearchParams();
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDifficulty, setSelectedDifficulty] = useState<number | null>(
@@ -28,7 +28,8 @@ export default function DifficultySelect() {
 
   const startGame = () => {
     if (!selectedDifficulty) return;
-    const url = `/game?grade=${encodeURIComponent(String(grade))}&module=${encodeURIComponent(String(module))}&operation=${encodeURIComponent(String(operation))}&difficulty=${selectedDifficulty}`;
+    const url = `/game?grade=${encodeURIComponent(String(grade))}&module=measures&difficulty=${selectedDifficulty}`;
+
     setModalVisible(false);
     router.push(url as any);
   };
@@ -36,7 +37,6 @@ export default function DifficultySelect() {
   const [page, setPage] = useState<1 | 2>(1);
 
   useEffect(() => {
-    // Lecture au chargement de l'écran
     speakWithMaleVoice("Choisis la difficulté", {
       language: "fr-FR",
       rate: 0.95,
@@ -46,6 +46,7 @@ export default function DifficultySelect() {
       Speech.stop();
     };
   }, []);
+
   useEffect(() => {
     if (modalVisible) {
       // Stop toute lecture précédente
@@ -62,10 +63,9 @@ export default function DifficultySelect() {
       Speech.stop();
     };
   }, [modalVisible]);
-
   return (
-    <View style={diffStyles.container}>
-      <Text style={diffStyles.title}>Choisis la difficulté</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Choisis la difficulté</Text>
       <View style={diffStyles.sliderContainer}>
         {page === 1 && (
           <View style={diffStyles.slide}>
@@ -126,6 +126,7 @@ export default function DifficultySelect() {
         )}
       </View>
 
+      {/* Modal de préparation */}
       <Modal
         visible={modalVisible}
         animationType="fade"
@@ -141,12 +142,12 @@ export default function DifficultySelect() {
 
           <View style={modalStyles.container}>
             {/* <Image
-              source={require("../../assets/images/ardoise.jpg")}
-              style={modalStyles.ardoise}
-            /> */}
+                    source={require("../../assets/images/ardoise.jpg")}
+                    style={modalStyles.ardoise}
+                  /> */}
             <Text style={modalStyles.title}>Prépare-toi !</Text>
             <Text style={modalStyles.subtitle}>
-              La voix va te poser{"\n"}10 questions de calcul mental.
+              La voix va te poser{"\n"}10 questions de conversion des unités.
             </Text>
 
             <View style={modalStyles.buttons}>
@@ -166,6 +167,38 @@ export default function DifficultySelect() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  title: {
+    fontFamily: "jeniffer",
+    fontSize: 60,
+    color: COLORS.text,
+    marginBottom: 24,
+  },
+  row: {
+    flexDirection: "row",
+    gap: 14,
+    backgroundColor: COLORS.bg,
+    padding: 12,
+    borderRadius: 12,
+    marginTop: 80,
+  },
+  medal: {
+    backgroundColor: COLORS.primary,
+    padding: 18,
+    borderRadius: 18,
+    minWidth: 100,
+    alignItems: "center",
+  },
+  medalText: { fontFamily: "BalooBold", fontSize: 20, color: "#FAFAF5" },
+});
+
 const diffStyles = StyleSheet.create({
   container: {
     flex: 1,

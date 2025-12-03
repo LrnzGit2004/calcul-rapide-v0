@@ -12,6 +12,9 @@ export default function LevelSelect() {
       language: "fr-FR",
       rate: 0.95,
       pitch: 0.8,
+
+      voice: "com.apple.ttsbundle.Thomas-compact",
+
       onError: () => console.log("Speech error"),
     });
 
@@ -28,7 +31,7 @@ export default function LevelSelect() {
         <TouchableOpacity
           style={[lvlStyles.card, { backgroundColor: COLORS.yellow }]}
           onPress={() =>
-            router.push(`/operation?level=${encodeURIComponent("CM1")}` as any)
+            router.push(`/modules?grade=${encodeURIComponent("CM1")}` as any)
           }
         >
           <Text style={lvlStyles.cardText}>CM1</Text>
@@ -36,7 +39,7 @@ export default function LevelSelect() {
         <TouchableOpacity
           style={[lvlStyles.card, { backgroundColor: COLORS.yellow }]}
           onPress={() =>
-            router.push(`/operation?level=${encodeURIComponent("CM2")}` as any)
+            router.push(`/modules?grade=${encodeURIComponent("CM2")}` as any)
           }
         >
           <Text style={lvlStyles.cardText}>CM2</Text>

@@ -1,7 +1,12 @@
 // app/game/index.tsx
 import { CustomKeyboard } from "@/components/CustomKeyboard";
 import { COLORS } from "@/constants/colors";
-import { generateQuestions } from "@/constants/questions";
+import {
+  generateGeometryQuestions,
+  generateMeasuresQuestions,
+  generateQuestions,
+} from "@/constants/questions";
+import { speakWithMaleVoice } from "@/utils/voice";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Speech from "expo-speech";
 import React, { useEffect, useRef, useState } from "react";
@@ -10,7 +15,7 @@ import { Keyboard, StyleSheet, Text, View } from "react-native";
 type Q = { id: number; prompt: string; audio: string; result: number };
 
 export default function GameScreen() {
-  const { level, operation, difficulty } = useLocalSearchParams();
+  const { grade, module, operation, difficulty } = useLocalSearchParams();
   const router = useRouter();
   const [questions, setQuestions] = useState<Q[]>([]);
   const [index, setIndex] = useState(0);
@@ -19,13 +24,19 @@ export default function GameScreen() {
   const [results, setResults] = useState<any[]>([]);
   const timerRef = useRef<number | null>(null);
 
-  // Load questions
+  // Load questions based on module
   useEffect(() => {
-    const qs = generateQuestions(
-      String(level),
-      String(operation),
-      Number(difficulty)
-    );
+    let qs: Q[] = [];
+    const diff = Number(difficulty) || 1;
+
+    if (module === "operation") {
+      qs = generateQuestions(String(grade), String(operation), diff);
+    } else if (module === "geo") {
+      qs = generateGeometryQuestions(String(grade), diff);
+    } else if (module === "measures") {
+      qs = generateMeasuresQuestions(String(grade), diff);
+    }
+
     setQuestions(qs);
   }, []);
 
@@ -36,10 +47,9 @@ export default function GameScreen() {
     const q = questions[index];
     Speech.stop();
 
-    Speech.speak(q.audio, {
+    speakWithMaleVoice(q.audio, {
       language: "fr-FR",
       rate: 0.95,
-      pitch: 0.9,
     });
 
     setTimeLeft(20);
@@ -71,7 +81,9 @@ export default function GameScreen() {
     if (index >= 9) {
       const final = [...results, { ...q, answer: numeric, correct, timeLeft }];
       const payload = encodeURIComponent(JSON.stringify(final));
-      router.replace(`/summary?payload=${payload}`);
+      router.replace(
+        `/summary?grade=${encodeURIComponent(String(grade))}&module=${encodeURIComponent(String(module))}&payload=${payload}` as any
+      );
       return;
     }
 
@@ -96,7 +108,7 @@ export default function GameScreen() {
           <Text style={styles.timerText}> {timeLeft}s</Text>
         </View>
 
-        <Text style={styles.hint}>Écoute M. ADAMA et tape ta réponse :</Text>
+        <Text style={styles.hint}>Écoute la voix et tape ta réponse :</Text>
 
         <View style={styles.answerBox}>
           <Text style={styles.answerText}>{answer || "…"}</Text>

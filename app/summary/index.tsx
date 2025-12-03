@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function SummaryScreen() {
-  const { payload } = useLocalSearchParams();
+  const { payload, grade, module } = useLocalSearchParams();
   const router = useRouter();
   const results = payload ? JSON.parse(String(payload)) : [];
 
@@ -14,16 +14,12 @@ export default function SummaryScreen() {
   const leftCol = useMemo(() => results.slice(0, 5), [results]);
   const rightCol = useMemo(() => results.slice(5, 10), [results]);
 
+  const handleReturnHome = () => {
+    router.push("/level" as any);
+  };
+
   return (
     <View style={sumStyles.container}>
-      {/* Mascotte */}
-      {/* <View style={sumStyles.left}>
-        <Mascot
-          pose={score >= 8 ? "celebrate" : score >= 5 ? "happy" : "encourage"}
-          size={230}
-        />
-      </View> */}
-
       {/* Résultats */}
 
       <View style={sumStyles.right}>
@@ -78,10 +74,7 @@ export default function SummaryScreen() {
         </View>
 
         {/* Bouton */}
-        <TouchableOpacity
-          style={sumStyles.button}
-          onPress={() => router.push("/level")}
-        >
+        <TouchableOpacity style={sumStyles.button} onPress={handleReturnHome}>
           <Text style={sumStyles.buttonText}>Retour</Text>
         </TouchableOpacity>
       </View>
@@ -130,11 +123,11 @@ const sumStyles = StyleSheet.create({
   columns: {
     flexDirection: "row",
     gap: 20,
-    paddingLeft: 25,
+    paddingLeft: 20,
   },
 
   column: {
-    width: "48%",
+    width: "50%",
   },
 
   row: {
