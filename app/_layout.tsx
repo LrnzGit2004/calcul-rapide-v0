@@ -1,24 +1,53 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import { StatusBar as ExpoStatusBar } from "expo-status-bar";
+import { ImageBackground, StatusBar, StyleSheet, View } from "react-native";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const [loaded] = useFonts({
+    Baloo: require("../assets/fonts/Baloo2-Regular.ttf"),
+    BalooBold: require("../assets/fonts/Baloo2-Bold.ttf"),
+    Outfit: require("../assets/fonts/OutfitRegular.ttf"),
+    OutfitSemi: require("../assets/fonts/OutfitSemiBold.ttf"),
+    jeniffer: require("../assets/fonts/jeniffer.ttf"),
+    comics: require("../assets/fonts/comics.otf"),
+  });
+
+  if (!loaded) return <View style={{ flex: 1, backgroundColor: "black" }} />;
+
+  // 👇 MASQUER LA BARRE D’ÉTAT (tous appareils)
+  StatusBar.setHidden(true, "fade");
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <View style={styles.root}>
+      {/* Cache la status bar côté Expo */}
+      <ExpoStatusBar hidden style="auto" />
+
+      <ImageBackground
+        source={require("../assets/images/background_app.gif")}
+        style={styles.background}
+        resizeMode="stretch"
+      >
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: "transparent" },
+          }}
+        />
+      </ImageBackground>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+  background: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+});
